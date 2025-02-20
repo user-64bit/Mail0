@@ -20,6 +20,7 @@ type Props = {
 
 const MailDisplay = ({ emailData, isFullscreen, isMuted, index }: Props) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [openDetailsPopover, setOpenDetailsPopover] = useState(false);
 
   useEffect(() => {
     if (index === 0) {
@@ -54,44 +55,67 @@ const MailDisplay = ({ emailData, isFullscreen, isMuted, index }: Props) => {
                   <time className="text-xs text-muted-foreground">
                     {format(new Date(emailData.receivedOn), "PPp")}
                   </time>
-                  <Popover>
+                  <Popover open={openDetailsPopover} onOpenChange={setOpenDetailsPopover}>
                     <PopoverTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-auto p-0 text-xs underline">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-auto p-0 text-xs underline"
+                        onClick={() => setOpenDetailsPopover(true)}
+                      >
                         Details
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[280px] space-y-2" align="start">
-                      <div className="text-xs">
-                        <span className="font-medium text-muted-foreground">From:</span>{" "}
-                        {emailData.sender.email}
-                      </div>
-                      <div className="text-xs">
-                        <span className="font-medium text-muted-foreground">Reply-To:</span>{" "}
-                        {emailData.sender.email}
-                      </div>
-                      <div className="text-xs">
-                        <span className="font-medium text-muted-foreground">To:</span>{" "}
-                        {emailData.sender.email}
-                      </div>
-                      <div className="text-xs">
-                        <span className="font-medium text-muted-foreground">Cc:</span>{" "}
-                        {emailData.sender.email}
-                      </div>
-                      <div className="text-xs">
-                        <span className="font-medium text-muted-foreground">Date:</span>{" "}
-                        {format(new Date(emailData.receivedOn), "PPpp")}
-                      </div>
-                      <div className="text-xs">
-                        <span className="font-medium text-muted-foreground">Mailed-By:</span>{" "}
-                        {emailData.sender.email}
-                      </div>
-                      <div className="text-xs">
-                        <span className="font-medium text-muted-foreground">Signed-By:</span>{" "}
-                        {emailData.sender.email}
-                      </div>
-                      <div className="flex items-center gap-1 text-xs">
-                        <span className="font-medium text-muted-foreground">Security:</span>{" "}
-                        <Lock className="h-3 w-3" /> {emailData.sender.email}
+                    <PopoverContent
+                      className="w-[420px] rounded-lg border p-3 shadow-lg"
+                      onBlur={() => setOpenDetailsPopover(false)}
+                    >
+                      <div className="space-y-1 text-sm">
+                        <div className="flex">
+                          <span className="w-24 text-end text-gray-500">From:</span>
+                          <div className="ml-3">
+                            <span className="pr-1 font-bold text-muted-foreground">
+                              {emailData.sender.name}
+                            </span>
+                            <span className="text-muted-foreground">{emailData.sender.email}</span>
+                          </div>
+                        </div>
+                        <div className="flex">
+                          <span className="w-24 text-end text-gray-500">To:</span>
+                          <span className="ml-3 text-muted-foreground">
+                            {emailData.sender.email}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          <span className="w-24 text-end text-gray-500">Cc:</span>
+                          <span className="ml-3 text-muted-foreground">
+                            {emailData.sender.email}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          <span className="w-24 text-end text-gray-500">Date:</span>
+                          <span className="ml-3 text-muted-foreground">
+                            {format(new Date(emailData.receivedOn), "PPpp")}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          <span className="w-24 text-end text-gray-500">Mailed-By:</span>
+                          <span className="ml-3 text-muted-foreground">
+                            {emailData.sender.email}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          <span className="w-24 text-end text-gray-500">Signed-By:</span>
+                          <span className="ml-3 text-muted-foreground">
+                            {emailData.sender.email}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="w-24 text-end text-gray-500">Security:</span>
+                          <div className="ml-3 flex items-center gap-1 text-muted-foreground">
+                            <Lock className="h-4 w-4 text-green-600" /> Standard encryption (TLS)
+                          </div>
+                        </div>
                       </div>
                     </PopoverContent>
                   </Popover>
